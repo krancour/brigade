@@ -37,6 +37,7 @@ import * as moduleAlias from "module-alias";
 import * as path from "path";
 import * as process from "process";
 import * as ulid from "ulid";
+import * as child_process from "child_process";
 
 import * as events from "@brigadecore/brigadier/out/events";
 import { App } from "./app";
@@ -53,12 +54,14 @@ const scripts = [
   "/etc/brigade/script",
 
   // checked out in repo
+  "/vcs/Drakefile.yaml",
   "/vcs/brigade.js",
 
   // data mounted from project.DefaultScript
   "/etc/brigade-project/defaultScript",
 
   // mounted configmap named in brigade.sh/project.DefaultScriptName
+  "/etc/brigade-default-script/Drakefile.yaml",
   "/etc/brigade-default-script/brigade.js"
 ];
 
@@ -73,6 +76,19 @@ function findScript() {
 // Search for the Brigade script and, if found, execute it.
 const script = findScript();
 if (script) {
+
+  // Drake support
+  if (fs.readFileSync(script, "utf8").indexOf("github.com/lovethedrake/drakespec") > -1) {
+    console.log(script + " looks like a Drakefile.yaml; running brigdrake");
+    try {
+      child_process.execSync("/brigade/bin/brigdrake-worker", { stdio: "inherit" });
+      process.exit(0);
+    }
+    catch {
+      process.exit(1);
+    }
+  }
+
   // Install aliases for common ways of referring to Brigade/Brigadier.
   moduleAlias.addAliases({
     "brigade": __dirname + "/brigadier",
