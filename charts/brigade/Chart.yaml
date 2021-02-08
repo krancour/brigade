@@ -1,11 +1,10 @@
-apiVersion: v3
+apiVersion: v2
 name: brigade
 description: |
   A Helm chart for Brigade
 type: application
-version: 0.1.0
-# Note that we use appVersion to get images, so make sure this is correct.
-appVersion: v0.1.0
+version: v0.0.0
+appVersion: v0.0.0
 sources:
 - https://github.com/brigadecore/brigade
 maintainers:
@@ -13,6 +12,6 @@ maintainers:
   email: kent.rancourt@gmail.com
 dependencies:
 - name: mongodb
-  version: ~10.3.6
+  version: 10.3.7
   repository: https://charts.bitnami.com/bitnami
   condition: mongodb.enabled
