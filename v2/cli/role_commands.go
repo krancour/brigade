@@ -143,7 +143,7 @@ var rolesCommands = &cli.Command{
 				{
 					Name: string(system.RoleEventCreator),
 					Usage: fmt.Sprintf(
-						"Grant the %s role, which enables creation of events for all "+
+						"Revoke the %s role, which enables creation of events for all "+
 							"projects.",
 						system.RoleEventCreator,
 					),

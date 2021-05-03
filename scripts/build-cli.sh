@@ -12,7 +12,7 @@ for os in $OSES; do
       go build \
       -ldflags "-w -X github.com/brigadecore/brigade/v2/internal/version.version=$VERSION -X github.com/brigadecore/brigade/v2/internal/version.commit=$COMMIT" \
       -o ../bin/brig-$os-$arch \
-      ./cli
+      ./new-cli
   done
   if [ $os = 'windows' ]; then
     mv ../bin/brig-$os-$arch ../bin/brig-$os-$arch.exe

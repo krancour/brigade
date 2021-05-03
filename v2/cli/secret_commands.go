@@ -80,7 +80,7 @@ var secretsCommand = &cli.Command{
 				&cli.StringFlag{
 					Name:     flagID,
 					Aliases:  []string{"i", flagProject, "p"},
-					Usage:    "Clear secrets for the specified project",
+					Usage:    "Clear secrets for the specified project (required)",
 					Required: true,
 				},
 				&cli.StringSliceFlag{

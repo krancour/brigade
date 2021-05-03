@@ -24,6 +24,7 @@ require (
 	github.com/pquerna/cachecontrol v0.0.0-20200921180117-858c6e7e6b7e // indirect
 	github.com/rs/cors v1.7.0
 	github.com/satori/go.uuid v1.2.0
+	github.com/spf13/cobra v0.0.3
 	github.com/stretchr/testify v1.6.1
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/xeipuuv/gojsonschema v1.2.0
