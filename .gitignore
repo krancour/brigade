@@ -6,6 +6,8 @@ dist/
 charts/brigade/charts
 .npmrc
 .DS_Store
+.brigade/secrets.yaml
+.brigade/node_modules/
 
 # IDEs
 .vscode/
