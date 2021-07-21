@@ -36,12 +36,13 @@ func newEventPage(
 		workerInfo: tview.NewTextView().SetDynamicColors(true),
 		jobsTable:  tview.NewTable().SetSelectable(true, false),
 		usage: tview.NewTextView().SetDynamicColors(true).SetText(
-			"[yellow](F5) [white]Reload    [yellow](<-/Del) [white]Back    [yellow](ESC) [white]Home    [yellow](Q) [white]Quit", // nolint: lll
+			"[yellow](F5) [white]Reload    [yellow](<-/Del) [white]Back    [yellow](L) [white]Logs    [yellow](ESC) [white]Home    [yellow](Q) [white]Quit", // nolint: lll
 		),
 	}
 	e.eventInfo.SetBorder(true).SetBorderColor(tcell.ColorWhite)
 	e.workerInfo.SetBorder(true).SetTitle(" Worker ")
 	e.jobsTable.SetBorder(true).SetTitle(" Jobs ")
+
 	// Create the layout
 	e.page.Flex = tview.NewFlex().
 		SetDirection(tview.FlexRow).
@@ -84,6 +85,11 @@ func (e *eventPage) refresh(eventID string) {
 			switch evt.Rune() {
 			case 'r', 'R': // Reload
 				e.router.loadEventPage(eventID)
+			case 'l', 'L':
+				// e.workerLogs.SetText("Placeholder logs")
+				// e.router.ShowPage("Event Logs")
+				// e.router.app.SetFocus(e.workerLogs)
+				e.router.loadLogPage(e.page, eventID, "")
 			case 'q', 'Q': // Exit
 				e.router.exit()
 			}

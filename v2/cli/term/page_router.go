@@ -17,6 +17,7 @@ type pageRouter struct {
 	projectPage       *projectPage
 	eventPage         *eventPage
 	jobPage           *jobPage
+	logPage           *logPage
 	app               *tview.Application
 	cancelRefreshFn   func()
 	cancelRefreshFnMu sync.Mutex
@@ -40,6 +41,8 @@ func NewPageRouter(
 	r.AddPage(eventPageName, r.eventPage, true, false)
 	r.jobPage = newJobPage(apiClient, app, r)
 	r.AddPage(jobPageName, r.jobPage, true, false)
+	r.logPage = newLogPage(apiClient, app, r)
+	r.AddPage(logPageName, r.logPage, true, false)
 	r.loadProjectsPage()
 	return r
 }
@@ -72,9 +75,21 @@ func (r *pageRouter) loadJobPage(eventID, jobID string) {
 	})
 }
 
+// loadLogPage loads a floating window that displays logs and brings it into
+// focus.
+func (r *pageRouter) loadLogPage(page *page, eventID, jobID string) {
+	r.loadPage(logPageName, func() {
+		r.logPage.refresh(*page, eventID, jobID)
+	}, r.logPage.logText)
+}
+
 // loadPage can refresh any page and bring it into focus, given the name of the
 // page and a refresh function.
-func (r *pageRouter) loadPage(pageName string, fn func()) {
+func (r *pageRouter) loadPage(
+	pageName string,
+	fn func(),
+	focusPage ...tview.Primitive,
+) {
 	// This is a critical section of code. We only want one page auto-refreshing
 	// at a time.
 	r.cancelRefreshFnMu.Lock()
@@ -86,9 +101,14 @@ func (r *pageRouter) loadPage(pageName string, fn func()) {
 	// Build a new context for the auto-refresh goroutine to use
 	var ctx context.Context
 	ctx, r.cancelRefreshFn = context.WithCancel(context.Background())
-	r.SwitchToPage(pageName) // Bring the page into focus
-	fn()                     // Synchronously refresh the page once
-	go func() {              // Start auto-refreshing
+	if focusPage == nil {
+		r.SwitchToPage(pageName) // Focus page and hide background
+	} else {
+		r.ShowPage(pageName) // Focus page and keep background
+		r.app.SetFocus(focusPage[0])
+	}
+	fn()        // Synchronously refresh the page once
+	go func() { // Start auto-refreshing
 		ticker := time.NewTicker(2 * time.Second)
 		for {
 			select {
